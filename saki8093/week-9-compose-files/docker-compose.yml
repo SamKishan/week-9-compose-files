@@ -1,0 +1,52 @@
+version: '3.1'
+services:
+  web3_1:
+    container_name: web1_3
+    build: .
+    ports:
+     - "80"
+    networks:
+      test:
+        ipv4_address: 172.28.0.2
+  web3_2:
+    container_name: web2_3
+    build: . 
+    ports: 
+     - "80" 
+    networks:
+      test:
+        ipv4_address: 172.28.0.3
+  lb3_2:
+    container_name: lb_3
+    build: ./lb 
+    ports:
+     - "8080:80"
+    networks:
+      test:
+        ipv4_address: 172.28.0.4
+  
+  db3_2:
+    container_name: db_3
+    image: mariadb
+    environment: 
+       MYSQL_ROOT_PASSWORD: password
+       MYSQL_DATABASE: cloud
+       MYSQL_PASSWORD: password
+    volumes:
+       - ./dbdata/basic.sql:/docker-entrypoint-initdb.d/basic.sql
+    ports:
+      - "3306"
+    networks: 
+      test:
+        ipv4_address: 172.28.0.5
+        
+
+networks:
+   test:
+       ipam:
+           driver: default
+           config: 
+               - subnet: 172.28.0.0/16
+
+volumes:
+ dbdata: 
